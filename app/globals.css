@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+@theme {
+  /* Tema GTA VI: malam Vice City yang ungu tua, dengan aksen senja jingga -> pink -> ungu. */
+  --color-bg: #0c0716;
+  --color-surface: #160e24;
+  --color-raised: #22153a;
+  --color-ink: #fff1f6;
+  --color-muted: #a796b9;
+  --color-line: rgb(255 241 246 / 0.1);
+  --color-accent: #ff4f9a;
+  --color-accent-ink: #14061c;
+  --color-sun: #ffa53d;
+  --color-dusk: #9b5cff;
+  --color-wave: #2ee6d6;
+}
+
+/* Font dari next/font dipasang sebagai variabel di <html>. */
+@theme inline {
+  --font-sans: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+  /* Dipakai untuk label kecil (kelas font-mono). */
+  --font-mono: var(--font-label), ui-sans-serif, system-ui, sans-serif;
+  --font-footer: var(--font-inter-footer), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    background: var(--color-bg);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+  body {
+    @apply bg-bg font-sans text-ink antialiased;
+    overflow-x: clip;
+  }
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+  section[id] { scroll-margin-top: 5rem; }
+}
+
+@utility btn-accent {
+  @apply inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-semibold text-accent-ink transition-colors duration-300 hover:bg-sun;
+}
+@utility btn-ghost {
+  @apply inline-flex items-center gap-2 rounded-full border border-line px-6 py-3.5 text-sm font-semibold text-ink transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-bg;
+}
+@utility scroll-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(255 79 154 / 0.25) transparent;
+}
+@utility text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(255 241 246 / 0.25);
+}
+
+/* Gradasi senja ala logo GTA VI. */
+@utility bg-sunset {
+  background-image: linear-gradient(115deg, #ffb347 0%, #ff6a5c 30%, #ff4f9a 60%, #9b5cff 100%);
+}
+/* Teks bergradasi senja. Dipakai untuk kata aksen di judul. */
+@utility text-sunset {
+  background-image: linear-gradient(100deg, #ffb347 0%, #ff4f9a 55%, #b06bff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* Ruang ekstra agar huruf miring tidak terpotong oleh background-clip. */
+  padding-right: 0.08em;
+}
+
+/* Teks per baris disembunyikan di balik "topeng" agar huruf bisa muncul dari bawah. */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+/* Kartu pesan baru di buku tamu. */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+}
+
+/* Garis-garis tipis seperti halaman buku bergaris. */
+.bg-ruled {
+  background-image: linear-gradient(to bottom, rgb(255 241 246 / 0.05) 1px, transparent 1px);
+  background-size: 100% 44px;
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 241 246 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 241 246 / 0.04) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+/* Butiran halus di atas seluruh halaman. */
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Sorotan yang mengikuti kursor di kartu keahlian. */
+.spotlight::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.4s;
+  background: radial-gradient(420px circle at var(--x, 50%) var(--y, 50%), rgb(255 79 154 / 0.12), transparent 60%);
+  pointer-events: none;
+}
+.spotlight:hover::before { opacity: 1; }
